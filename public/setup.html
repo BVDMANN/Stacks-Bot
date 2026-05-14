@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration de votre Assistant — Stacks-Bot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f5f5f7; }
+        .apple-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(0, 0, 0, 0.05); }
+        .input-apple {
+            width: 100%;
+            padding: 12px 16px;
+            background: #fbfbfb;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .input-apple:focus {
+            outline: none;
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+        }
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .color-dot.active { border-color: #000; scale: 1.2; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-2xl w-full">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold tracking-tight text-black mb-2">Configurez votre assistant</h1>
+            <p class="text-gray-500">Donnez une personnalité et des connaissances à votre IA.</p>
+        </div>
+
+        <div class="apple-card rounded-[32px] p-8 md:p-12 shadow-xl shadow-black/5">
+            <form id="setup-form" class="space-y-8">
+                <!-- Business Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Nom de l'entreprise</label>
+                        <input type="text" id="nom" placeholder="ex: Le Petit Bistro" class="input-apple" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Type de commerce</label>
+                        <input type="text" id="type_commerce" placeholder="ex: Restaurant Gastronomique" class="input-apple" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Ville</label>
+                        <input type="text" id="ville" placeholder="ex: Paris" class="input-apple" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Téléphone</label>
+                        <input type="tel" id="telephone" placeholder="ex: 01 23 45 67 89" class="input-apple" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Adresse complète</label>
+                    <input type="text" id="adresse" placeholder="ex: 12 Rue de Rivoli, 75001 Paris" class="input-apple" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Horaires d'ouverture</label>
+                    <input type="text" id="horaires" placeholder="ex: Lun-Ven 9h-18h, Sam 10h-16h" class="input-apple" required>
+                </div>
+
+                <!-- Knowledge Base -->
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Base de connaissances (La Bible du Bot)</label>
+                    <textarea id="knowledgeBase" rows="6" placeholder="Décrivez tout ce que le bot doit savoir : tarifs, menu, services spécifiques, FAQ, ton de voix..." class="input-apple resize-none" required></textarea>
+                    <p class="text-[11px] text-gray-400 italic">Plus vous donnez de détails, plus l'IA sera précise et professionnelle.</p>
+                </div>
+
+                <!-- Visuals -->
+                <div class="space-y-4">
+                    <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">Couleur principale</label>
+                    <div class="flex gap-4" id="color-picker">
+                        <div class="color-dot active" style="background: #000000" data-color="#000000"></div>
+                        <div class="color-dot" style="background: #B8860B" data-color="#B8860B"></div>
+                        <div class="color-dot" style="background: #007AFF" data-color="#007AFF"></div>
+                        <div class="color-dot" style="background: #34C759" data-color="#34C759"></div>
+                        <div class="color-dot" style="background: #FF3B30" data-color="#FF3B30"></div>
+                        <div class="color-dot" style="background: #AF5283" data-color="#AF5283"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-black text-white rounded-2xl font-semibold hover:bg-gray-800 transition-all shadow-lg shadow-black/10">
+                    Lancer mon Assistant →
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('clientId');
+
+        if (!clientId) {
+            alert("Accès non autorisé. Veuillez passer par le paiement.");
+            window.location.href = '/';
+        }
+
+        let selectedColor = '#000000';
+        const dots = document.querySelectorAll('.color-dot');
+        dots.forEach(dot => {
+            dot.onclick = () => {
+                dots.forEach(d => d.classList.remove('active'));
+                dot.classList.add('active');
+                selectedColor = dot.dataset.color;
+            };
+        });
+
+        document.getElementById('setup-form').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const updates = {
+                nom: document.getElementById('nom').value,
+                type_commerce: document.getElementById('type_commerce').value,
+                ville: document.getElementById('ville').value,
+                telephone: document.getElementById('telephone').value,
+                adresse: document.getElementById('adresse').value,
+                horaires: document.getElementById('horaires').value,
+                knowledgeBase: document.getElementById('knowledgeBase').value,
+                colors: { primary: selectedColor }
+            };
+
+            try {
+                const res = await fetch('/api/setup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ clientId, updates })
+                });
+                if (res.ok) {
+                    alert("Configuration enregistrée ! Vous allez être redirigé vers votre bot.");
+                    window.location.href = `/widget?id=${clientId}`;
+                } else {
+                    alert("Erreur lors de l'enregistrement.");
+                }
+            } catch (e) {
+                alert("Erreur de connexion au serveur.");
+            }
+        };
+    </script>
+</body>
+</html>
