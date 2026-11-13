@@ -199,7 +199,6 @@
 
     function demoReply(text) {
         var low = text.toLowerCase();
-        if (/(bonjour|salut|coucou|hello|bonsoir)/.test(low)) return "Bonjour ! Ravie de vous accueillir au Comptoir de Jules. Je peux vous renseigner sur nos horaires, la carte, les réservations ou notre adresse. Que souhaitez-vous savoir ?";
         if (/(r[eé]serv|table|rendez-vous|rdv)/.test(low)) {
             lastWhen = extractWhen(text);
             if (lastWhen) return "Parfait, " + lastWhen.label + " — c'est noté pour votre réservation. Je vous ouvre le formulaire pour confirmer avec vos coordonnées.";
@@ -207,10 +206,11 @@
         }
         if (/(horaire|ouvert|ferm|heure)/.test(low)) return "Nous sommes ouverts du mardi au dimanche, de 11h30 à 14h30 et de 18h30 à 22h30. Fermé le lundi. La cuisine ferme 30 minutes avant la fermeture.";
         if (/(prix|tarif|menu|carte|plat|manger|formule)/.test(low)) return "Notre carte : formule déjeuner 16 €, plat du jour 14 €, menu du soir 29 € (entrée + plat + dessert). Notre spécialité : le poulet rôti aux herbes et son jus. Voulez-vous réserver une table ?";
-        if (/(adresse|o[uù]|situ[eé]|venir|parking|acc[eè]s|itin[eé]raire|plan)/.test(low)) return "Nous sommes au 12 rue des Lilas, 77420 Champs-sur-Marne. Parking gratuit devant le restaurant, RER A (Noisy-Champs) à 5 minutes à pied.";
+        if (/(adresse|(?:^|\s)o[uù](?:\s|$|[?.,!])|situ[eé]|venir|parking|acc[eè]s|itin[eé]raire|plan)/.test(low)) return "Nous sommes au 12 rue des Lilas, 77420 Champs-sur-Marne. Parking gratuit devant le restaurant, RER A (Noisy-Champs) à 5 minutes à pied.";
         if (/(t[eé]l[eé]phone|contact|appeler|joindre|num[eé]ro)/.test(low)) return "Vous pouvez nous joindre au 01 84 12 34 56 (numéro fictif — ceci est une démonstration).";
         if (/(livraison|emporter|takeaway)/.test(low)) return "Nous proposons la vente à emporter : commandez par téléphone et récupérez votre commande au comptoir. Pas de livraison pour le moment.";
         if (/(v[eé]g[eé]tarien|vegan|allergie|sans gluten)/.test(low)) return "Nous avons des options végétariennes chaque jour, et des plats sans gluten sur demande — précisez-le simplement dans votre réservation.";
+        if (/(bonjour|salut|coucou|hello|bonsoir)/.test(low)) return "Bonjour ! Ravie de vous accueillir au Comptoir de Jules. Je peux vous renseigner sur nos horaires, la carte, les réservations ou notre adresse. Que souhaitez-vous savoir ?";
         if (/merci/.test(low)) return "Avec plaisir ! Autre chose ?";
         if (/(au revoir|à bientôt|bye)/.test(low)) return "À bientôt au Comptoir de Jules !";
         return "Je suis une démo : je peux répondre aux questions sur les horaires, la carte, les réservations et l'adresse. Essayez par exemple « Quels sont vos horaires ? ».";
