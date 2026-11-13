@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StacksBot | L'Intelligence Commerciale pour PME</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #000000;
+            --accent: #B8860B;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --bg-light: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.8);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: white;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            height: 50px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .nav-content {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            margin-left: 25px;
+            transition: var(--transition);
+            opacity: 0.7;
+        }
+        .nav-links a:hover { opacity: 1; color: var(--accent); }
+
+        /* --- HERO --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at center, #ffffff 0%, #f5f5f7 100%);
+        }
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            color: #000;
+            line-height: 1.1;
+        }
+        .hero p {
+            font-size: 22px;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+        .cta-button {
+            padding: 18px 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background: #222;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        /* --- ROI CALCULATOR --- */
+        .roi-section {
+            padding: 120px 20px;
+            background: #000;
+            color: white;
+            text-align: center;
+        }
+        .roi-title {
+            font-size: 40px;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        .roi-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .roi-input-group {
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .roi-input {
+            background: white;
+            border: none;
+            color: black;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 24px;
+            text-align: center;
+            width: 220px;
+            font-weight: 700;
+            outline: none;
+        }
+        .roi-result {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 30px;
+            transition: var(--transition);
+        }
+
+        /* --- DEMO INTERACTIVE --- */
+        .demo-section {
+            padding: 120px 20px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .demo-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .demo-window {
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            background: #f5f5f7;
+            border-radius: 30px;
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.08);
+        }
+        .demo-sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid #eee;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .demo-sidebar h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .scenario-btn {
+            background: var(--bg-light);
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .scenario-btn:hover {
+            background: white;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .demo-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .msg {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .msg.user {
+            align-self: flex-end;
+            background: #000;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .msg.bot {
+            align-self: flex-start;
+            background: var(--bg-light);
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+        }
+        .chat-input-area {
+            padding: 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+            font-size: 15px;
+        }
+        .send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .send-btn:hover { opacity: 0.8; }
+
+        /* --- FEATURES GRID --- */
+        .features-section {
+            padding: 120px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .features-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+        .feature-card {
+            background: var(--bg-light);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .feature-card:hover {
+            background: white;
+            border-color: var(--accent);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+        .feature-card i {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 25px;
+        }
+        .feature-card h3 { font-size: 24px; margin-bottom: 15px; }
+        .feature-card p { color: var(--text-muted); font-size: 16px; }
+
+        /* --- PRICING --- */
+        .pricing-section {
+            padding: 120px 20px;
+            background: var(--bg-light);
+            text-align: center;
+        }
+        .pricing-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 60px;
+        }
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .price-card {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 40px;
+            width: 380px;
+            border: 1px solid #eee;
+            transition: var(--transition);
+            position: relative;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+        .price-card.popular {
+            border: 2px solid var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 30px 60px rgba(184, 134, 11, 0.1);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .price-card h3 { font-size: 32px; margin-bottom: 10px; }
+        .price-card .amount {
+            font-size: 60px;
+            font-weight: 800;
+            margin: 25px 0;
+        }
+        .price-card .amount span { font-size: 20px; color: var(--text-muted); font-weight: 400; }
+        .price-card ul { list-style: none; margin: 40px 0; text-align: left; }
+        .price-card li { margin-bottom: 15px; color: var(--text-main); font-size: 16px; display: flex; align-items: center; }
+        .price-card li i { color: var(--accent); margin-right: 15px; font-size: 18px; }
+
+        .buy-button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        .btn-light { background: var(--bg-light); color: var(--text-main); }
+        .btn-dark { background: var(--primary); color: white; }
+        .buy-button:hover { transform: scale(1.02); opacity: 0.9; }
+
+        footer {
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 42px; }
+            .hero p { font-size: 18px; }
+            .pricing-container { flex-direction: column; align-items: center; }
+            .price-card { width: 100%; }
+            .demo-window { height: 450px; flex-direction: column; }
+            .demo-sidebar { display: flex; width: 100%; border-right: none; border-bottom: 1px solid #eee; flex-direction: row; overflow-x: auto; padding: 10px; gap: 10px; }
+            .scenario-btn { white-space: nowrap; padding: 8px 12px; font-size: 12px; }
+        }
+    </style>
+<style>
+.demo-banner{position:fixed;top:0;left:0;right:0;z-index:2000;background:#f59e0b;color:#111;text-align:center;padding:9px 12px;font:600 13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+nav{top:37px !important;}
+body{padding-top:37px;}
+</style>
+</head>
+<body>
+<div class="demo-banner">DÉMO — Page de démonstration statique : les réponses du chatbot sont simulées, aucun paiement réel, aucune donnée envoyée.</div>
+
+
+    <nav>
+        <div class="nav-content">
+            <div style="font-weight: 800; letter-spacing: 1px;">STACKSBOT</div>
+            <div class="nav-links">
+                <a href="#features">Fonctionnalités</a>
+                <a href="#roi">ROI</a>
+                <a href="#pricing">Tarifs</a>
+                <a href="#pricing" class="cta-button" style="padding: 8px 20px; font-size: 11px; color: white;">Démarrer</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>L'Intelligence <br> Commerciale.</h1>
+        <p>L'assistant IA haut de gamme conçu pour transformer vos visiteurs en clients fidèles et automatiser votre croissance.</p>
+        <a href="#vision" class="cta-button">Découvrir l'expérience</a>
+    </section>
+
+    <!-- SECTION VISION -->
+    <section id="vision" style="padding: 120px 20px; background: white; text-align: center; max-width: 1100px; margin: 0 auto;">
+        <h2 style="font-size: 48px; font-weight: 800; margin-bottom: 30px; letter-spacing: -1px;">L'ère du commerce instantané.</h2>
+        <p style="font-size: 22px; color: var(--text-muted); line-height: 1.6; margin-bottom: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
+            Aujourd'hui, un client qui n'obtient pas de réponse en moins de 2 minutes est un client perdu.
+            StacksBot ne se contente pas de répondre : il convertit. Il allie la puissance du modèle Llama 3.3
+            à l'identité unique de votre entreprise pour offrir une expérience client sans couture, 24h/24.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; text-align: left;">
+            <div style="padding: 40px; border-radius: 30px; background: var(--bg-light); border: 1px solid #eee; transition: var(--transition);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#eee'">
+                <h3 style="margin-bottom: 15px; font-size: 24px; color: #000;">🧠 Cerveau Sur-Mesure</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">L'IA ingère vos documents, vos tarifs et vos spécificités pour parler exactement comme vous, sans jamais improviser.</p>
+            </div>
+            <div style="padding: 40px; border-radius: 30px; background: var(--bg-light); border: 1px solid #eee; transition: var(--transition);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#eee'">
+                <h3 style="margin-bottom: 15px; font-size: 24px; color: #000;">⚡ Vitesse Exécutive</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">Propulsé par Groq, StacksBot répond instantanément. Zéro latence, zéro frustration, juste de l'efficacité pure.</p>
+            </div>
+            <div style="padding: 40px; border-radius: 30px; background: var(--bg-light); border: 1px solid #eee; transition: var(--transition);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#eee'">
+                <h3 style="margin-bottom: 15px; font-size: 24px; color: #000;">📈 Croissance Passive</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">Pendant que vous dormez, StacksBot qualifie vos leads, répond aux objections et remplit votre agenda de rendez-vous.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION COMMENT ÇA MARCHE -->
+    <section style="padding: 120px 20px; background: var(--bg-light); text-align: center;">
+        <h2 style="font-size: 42px; font-weight: 800; margin-bottom: 60px;">Trois étapes. Un impact total.</h2>
+        <div style="display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
+            <div style="width: 300px; text-align: center;">
+                <div style="font-size: 60px; font-weight: 800; color: var(--accent); margin-bottom: 20px; opacity: 0.5;">01</div>
+                <h3 style="font-size: 24px; margin-bottom: 15px;">Configuration</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">On définit ensemble votre identité, vos services et vos horaires de fonctionnement.</p>
+            </div>
+            <div style="width: 300px; text-align: center;">
+                <div style="font-size: 60px; font-weight: 800; color: var(--accent); margin-bottom: 20px; opacity: 0.5;">02</div>
+                <h3 style="font-size: 24px; margin-bottom: 15px;">Apprentissage</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">L'IA absorbe votre base de connaissances pour devenir l'expert ultime de votre métier.</p>
+            </div>
+            <div style="width: 300px; text-align: center;">
+                <div style="font-size: 60px; font-weight: 800; color: var(--accent); margin-bottom: 20px; opacity: 0.5;">03</div>
+                <h3 style="font-size: 24px; margin-bottom: 15px;">Déploiement</h3>
+                <p style="color: var(--text-muted); font-size: 16px;">On intègre le widget sur votre site. Votre croissance devient autonome et automatisée.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROI CALCULATOR -->
+    <section id="roi" class="roi-section">
+        <h2 class="roi-title">Combien perdez-vous chaque mois ?</h2>
+        <div class="roi-container">
+            <p style="font-size: 18px; opacity: 0.9;">Saisissez le nombre de clients potentiels qui quittent votre site faute de réponse immédiate :</p>
+            <div class="roi-input-group">
+                <input type="number" id="lost-leads" class="roi-input" placeholder="Ex: 20" oninput="calculateROI()">
+                <span style="font-weight: 500; opacity: 0.8;">Clients perdus / mois</span>
+            </div >
+            <div class="roi-result" id="roi-value">0 € de manque à gagner</div>
+            <p style="margin-top: 25px; opacity: 0.6; font-size: 14px;">Estimation basée sur un panier moyen de 50€.</p>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE DEMO -->
+    <section class="demo-section">
+        <h2 class="demo-title">L'Expérience StacksBot</h2>
+        <p style="text-align:center; margin-bottom: 40px; color: var(--text-muted); max-width: 600px;">
+            Ne nous croyez pas sur parole. Testez la puissance de l'IA en temps réel avec nos scénarios métiers.
+        </p>
+        <div class="demo-window">
+            <div class="demo-sidebar">
+                <h3 style="font-size: 16px; color: #333;">🧪 Scénarios Métiers</h3>
+                <button class="scenario-btn" onclick="sendDemo('Quelles sont vos heures d\'ouverture ?')">🕒 Demander les horaires</button>
+                <button class="scenario-btn" onclick="sendDemo('Je voudrais réserver pour demain 14h')">📅 Faire une réservation</button>
+                <button class="scenario-btn" onclick="sendDemo('Quels sont vos tarifs ?')">💰 Questionner les prix</button>
+                <button class="scenario-btn" onclick="sendDemo('Est-ce que vous faites des devis gratuits ?')">📄 Demander un devis</button>
+                <button class="scenario-btn" onclick="document.getElementById('bot-launcher') && document.getElementById('bot-launcher').click()">💬 Ouvrir le widget flottant</button>
+                <div style="margin-top: auto; font-size: 11px; color: #999; text-align: center;">Simulateur — réponses simulées (démo)</div>
+            </div>
+            <div class="demo-chat">
+                <div class="chat-messages" id="demo-messages">
+                    <div class="msg bot">Bonjour ! Je suis la démo de StacksBot. Choisissez un scénario à gauche ou posez-moi votre propre question !</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="demo-input" class="chat-input" placeholder="Tapez votre message ici...">
+                    <button class="send-btn" onclick="sendDemo()">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <h2 class="section-title" style="text-align:center; font-size: 42px; margin-bottom: 60px; font-weight: 700;">L'Excellence Opérationnelle</h2>
+        <div class="benefits-grid">
+            <div class="feature-card">
+                <i class="fa-solid fa-clock"></i>
+                <h3>Disponibilité 24/7</h3>
+                <p>Votre entreprise ne dort jamais. Le bot gère vos prospects et vos réservations même quand vous êtes absent.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-bolt"></i>
+                <h3>Réponse Instantanée</h3>
+                <p>Zéro attente. Une fluidité absolue qui inspire confiance et professionnalisme dès la première seconde.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h3>Conversion Accrue</h3>
+                <p>Optimisé pour la vente. Chaque interaction est conçue pour transformer un curieux en client payant.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <h2 class="section-title" style="text-align:center; font-size: 42px; margin-bottom: 60px; font-weight: 700;">Investissez dans votre croissance</h2>
+        <p style="text-align:center;color:var(--text-muted);margin:-30px 0 40px;">Démo — aucun paiement réel : les boutons « Choisir » ouvrent une simulation, aucune carte bancaire n'est demandée.</p>
+        <div class="pricing-container">
+            <!-- Plan Starter -->
+            <div class="price-card">
+                <h3 style="font-size: 32px; margin-bottom: 10px;">Starter</h3>
+                <div class="amount">29€<span style="font-size:20px; color:var(--text-muted);">/mois</span></div>
+                <ul style="list-style:none; text-align:left; margin: 30px 0;">
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Chatbot IA Intelligent</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Gestion des réservations</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Installation rapide</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Support Email</li>
+                </ul>
+                <button class="buy-button btn-light" onclick="buy('Starter')" style="background: #f5f5f7; color: #000; border: 1px solid #ddd; font-weight: 700; cursor: pointer; width: 100%; padding: 20px; border-radius: 20px; transition: all 0.3s ease;">Choisir Starter</button>
+            </div>
+
+            <!-- Plan Business -->
+            <div class="price-card popular">
+                <div class="popular-badge">LE PLUS POPULAIRE</div>
+                <h3 style="font-size: 32px; margin-bottom: 10px;">Business</h3>
+                <div class="amount">59€<span style="font-size:20px; color:var(--text-muted);">/mois</span></div>
+                <ul style="list-style:none; text-align:left; margin: 30px 0;">
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Tout le plan Starter</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Base de connaissance avancée</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Analyse des conversations</li>
+                    <li style="margin-bottom: 15px; display: flex; align-items: center;"><i class="fa-solid fa-check" style="color:var(--accent); margin-right:15px;"></i> Support Prioritaire 24/7</li>
+                </ul>
+                <button class="buy-button btn-dark" onclick="buy('Business')" style="background: #000; color: #fff; font-weight: 700; cursor: pointer; width: 100%; padding: 20px; border-radius: 20px; transition: all 0.3s ease;">Choisir Business</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 StacksBot. Designed and engineered by STACKS.</p>
+    </footer >
+
+    <script>
+        function calculateROI() {
+            const leadsInput = document.getElementById('lost-leads');
+            const resultDiv = document.getElementById('roi-value');
+            if (!leadsInput) return;
+
+            const leads = parseInt(leadsInput.value) || 0;
+            const loss = leads * 50;
+
+            resultDiv.innerText = loss > 0 ? loss.toLocaleString('fr-FR') + " € de manque à gagner / mois" : "0 € de manque à gagner";
+            resultDiv.style.transform = "scale(1.1)";
+            setTimeout(() => { resultDiv.style.transform = "scale(1)"; }, 100);
+        }
+
+        async function sendDemo(text = null) {
+            const input = document.getElementById('demo-input');
+            const msgText = text || input.value;
+            if (!msgText) return;
+
+            const messagesDiv = document.getElementById('demo-messages');
+            messagesDiv.innerHTML += '<div class="msg user">' + msgText + '</div>';
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Simulation de "chargement" pour faire plus réaliste
+            const loadingId = 'loading-' + Date.now();
+            messagesDiv.innerHTML += '<div class="msg bot" id="' + loadingId + '">...</div>';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            setTimeout(() => {
+                let response = "C'est une question stratégique. En version réelle, j'analyse vos données pour répondre avec une précision chirurgicale. Imaginez un commercial d'élite disponible 24h/24 sur votre site.";
+                const low = msgText.toLowerCase();
+
+                if (low.includes('horaire') || low.includes('ouvert')) {
+                    response = "Nous sommes ouverts du lundi au samedi, de 9h à 19h. C'est le moment idéal pour venir nous voir. Souhaitez-vous que je vous réserve un créneau prioritaire ?";
+                } else if (low.includes('réserver') || low.includes('rendez-vous') || low.includes('date')) {
+                    response = "Absolument. Je peux gérer votre agenda en temps réel. Pour quelle date et heure souhaitez-vous venir ? Je m'occupe de tout.";
+                } else if (low.includes('prix') || low.includes('tarif') || low.includes('combien')) {
+                    response = "Nos solutions sont conçues pour être rentables dès le premier mois. Je peux vous envoyer notre grille tarifaire détaillée par email si vous le souhaitez ?";
+                } else if (low.includes('devis') || low.includes('gratuit')) {
+                    response = "Je peux collecter tous vos besoins techniques dès maintenant et transmettre un dossier complet à votre équipe pour un devis ultra-rapide. On commence ?";
+                } else if (low.includes('bonjour') || low.includes('salut')) {
+                    response = "Bonjour ! Je suis l'intelligence commerciale de StacksBot. Comment puis-je booster votre business aujourd'hui ?";
+                }
+
+                document.getElementById(loadingId).innerText = response;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 800);
+        }
+
+        function buy(plan) {
+            var prices = { 'Starter': '29 €/mois', 'Business': '59 €/mois' };
+            document.getElementById('demo-pay-plan').innerText = plan + ' — ' + (prices[plan] || '');
+            document.getElementById('demo-pay-modal').style.display = 'flex';
+        }
+        function closeDemoPay() { document.getElementById('demo-pay-modal').style.display = 'none'; }
+    </script>
+<div id="demo-pay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeDemoPay()">
+        <div style="background:#fff;border-radius:24px;max-width:420px;width:100%;padding:32px;text-align:center;">
+            <div style="display:inline-block;background:#f59e0b;color:#111;font-weight:800;font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:16px;">DÉMO</div>
+            <h3 id="demo-pay-plan" style="font-size:22px;margin-bottom:12px;"></h3>
+            <p style="color:#666;font-size:15px;margin-bottom:24px;">Aucun paiement réel ici : dans la version complète, ce bouton ouvre Stripe Checkout. Aucune carte bancaire n'est demandée dans cette démo.</p>
+            <button onclick="closeDemoPay()" style="background:#000;color:#fff;border:none;padding:14px 28px;border-radius:16px;font-weight:700;cursor:pointer;">Fermer</button>
+        </div>
+    </div>
+    <script src="widget.js"></script>
+</body>
+</html>
