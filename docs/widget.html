@@ -38,6 +38,19 @@
             background: rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
+        /* Mode intégré (dans l'iframe de la page démo) : la fenêtre de chat
+           remplit l'iframe et le lanceur interne est masqué — un seul
+           bouton rond, celui de la page parente. */
+        html.embedded, html.embedded body { height: 100%; }
+        html.embedded body { position: relative; }
+        html.embedded #chat-launcher { display: none !important; }
+        html.embedded #chat-window {
+            position: absolute !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: auto !important; height: auto !important;
+            opacity: 1 !important; pointer-events: auto !important;
+            transform: none !important; border-radius: 0 !important;
+        }
     </style>
 </head>
 <body class="bg-transparent">
@@ -109,6 +122,14 @@
 
     <script>
 (function () {
+    // Mode intégré : cette page tourne dans l'iframe de la page démo.
+    // La fenêtre de chat remplit alors l'iframe et le lanceur interne
+    // est masqué (le bouton rond de la page parente fait office de lanceur).
+    var EMBEDDED = window.self !== window.top;
+    if (EMBEDDED) {
+        document.documentElement.classList.add('embedded');
+    }
+
     var DEMO_CONFIG = {
         nom: 'Le Comptoir de Jules',
         initials: 'CJ',
@@ -118,7 +139,7 @@
 
     var session = {
         id: sessionStorage.getItem('chat_session_id') || ('sess_' + Date.now()),
-        isOpen: false,
+        isOpen: EMBEDDED,
         isLoading: false,
         history: []
     };
@@ -140,11 +161,51 @@
         cancelRes: document.getElementById('cancel-res')
     };
 
+    // Détecte une date / heure déjà donnée par l'utilisateur
+    // (ex. « demain 14h », « vendredi 10h30 ») pour l'accuser au lieu de redemander.
+    function extractWhen(text) {
+        var low = text.toLowerCase();
+        var day = null, dateVal = null;
+        var today = new Date();
+        function iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+        if (/demain/.test(low)) {
+            var t = new Date(today); t.setDate(t.getDate() + 1);
+            day = 'demain'; dateVal = iso(t);
+        } else if (/aujourd'hui|aujourd’hui|ce jour/.test(low)) {
+            day = "aujourd'hui"; dateVal = iso(today);
+        } else {
+            var days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+            for (var i = 0; i < days.length; i++) {
+                if (low.indexOf(days[i]) !== -1) {
+                    var target = (i + 7 - today.getDay()) % 7 || 7;
+                    var d = new Date(today); d.setDate(d.getDate() + target);
+                    day = days[i]; dateVal = iso(d);
+                    break;
+                }
+            }
+        }
+        var hm = low.match(/(\d{1,2})\s*h\s*(\d{2})?|(\d{1,2}):(\d{2})/);
+        var timeVal = null, timeLabel = null;
+        if (hm) {
+            var h = String(parseInt(hm[1] || hm[3], 10)).padStart(2, '0');
+            var m = String(parseInt(hm[2] || hm[4] || '00', 10)).padStart(2, '0');
+            timeVal = h + ':' + m;
+            timeLabel = (m === '00' ? h.replace(/^0/, '') + 'h' : h.replace(/^0/, '') + 'h' + m);
+        }
+        if (!day && !timeVal) return null;
+        return { label: [day, timeLabel].filter(Boolean).join(' à '), date: dateVal, time: timeVal };
+    }
+    var lastWhen = null;
+
     function demoReply(text) {
         var low = text.toLowerCase();
         if (/(bonjour|salut|coucou|hello|bonsoir)/.test(low)) return "Bonjour ! Ravie de vous accueillir au Comptoir de Jules. Je peux vous renseigner sur nos horaires, la carte, les réservations ou notre adresse. Que souhaitez-vous savoir ?";
+        if (/(r[eé]serv|table|rendez-vous|rdv)/.test(low)) {
+            lastWhen = extractWhen(text);
+            if (lastWhen) return "Parfait, " + lastWhen.label + " — c'est noté pour votre réservation. Je vous ouvre le formulaire pour confirmer avec vos coordonnées.";
+            return "Bien sûr ! Je vous ouvre le formulaire de réservation — indiquez votre nom, votre e-mail, la date et l'heure, et c'est noté.";
+        }
         if (/(horaire|ouvert|ferm|heure)/.test(low)) return "Nous sommes ouverts du mardi au dimanche, de 11h30 à 14h30 et de 18h30 à 22h30. Fermé le lundi. La cuisine ferme 30 minutes avant la fermeture.";
-        if (/(r[eé]serv|table|rendez-vous|rdv)/.test(low)) return "Bien sûr ! Je vous ouvre le formulaire de réservation — indiquez votre nom, votre e-mail, la date et l'heure, et c'est noté.";
         if (/(prix|tarif|menu|carte|plat|manger|formule)/.test(low)) return "Notre carte : formule déjeuner 16 €, plat du jour 14 €, menu du soir 29 € (entrée + plat + dessert). Notre spécialité : le poulet rôti aux herbes et son jus. Voulez-vous réserver une table ?";
         if (/(adresse|o[uù]|situ[eé]|venir|parking|acc[eè]s|itin[eé]raire|plan)/.test(low)) return "Nous sommes au 12 rue des Lilas, 77420 Champs-sur-Marne. Parking gratuit devant le restaurant, RER A (Noisy-Champs) à 5 minutes à pied.";
         if (/(t[eé]l[eé]phone|contact|appeler|joindre|num[eé]ro)/.test(low)) return "Vous pouvez nous joindre au 01 84 12 34 56 (numéro fictif — ceci est une démonstration).";
@@ -211,6 +272,12 @@
     }
 
     function openReservationForm() {
+        // Pré-remplit la date / l'heure déjà données par l'utilisateur.
+        if (lastWhen) {
+            var d = document.getElementById('res-date'), t = document.getElementById('res-time');
+            if (lastWhen.date && d) d.value = lastWhen.date;
+            if (lastWhen.time && t) t.value = lastWhen.time;
+        }
         dom.inputContainer.classList.add('hidden');
         dom.resForm.classList.remove('hidden');
     }
@@ -238,6 +305,7 @@
     }
 
     dom.launcher.onclick = function () {
+        if (EMBEDDED) return; // en mode intégré, le lanceur de la page parente gère l'ouverture
         session.isOpen = !session.isOpen;
         dom.window.classList.toggle('opacity-0', !session.isOpen);
         dom.window.classList.toggle('pointer-events-none', !session.isOpen);
@@ -249,6 +317,11 @@
     dom.close.onclick = function (e) {
         e.stopPropagation();
         session.isOpen = false;
+        if (EMBEDDED) {
+            // Demande à la page parente de masquer l'iframe.
+            window.parent.postMessage({ type: 'stacksbot-widget-close' }, '*');
+            return;
+        }
         dom.window.classList.add('opacity-0', 'pointer-events-none', 'translate-y-10', 'scale-95');
     };
 
@@ -265,7 +338,7 @@
     // Questions envoyées par la page d'accueil de la démo (postMessage).
     window.addEventListener('message', function (e) {
         if (e.data && e.data.type === 'demo-ask' && e.data.text) {
-            if (!session.isOpen) dom.launcher.click();
+            if (!session.isOpen && !EMBEDDED) dom.launcher.click();
             dom.input.value = e.data.text;
             sendMessage();
         }

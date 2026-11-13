@@ -17,6 +17,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+        section[id] { scroll-margin-top: 110px; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: white;
@@ -60,14 +62,63 @@
 
         /* --- HERO --- */
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 0 20px;
+            justify-content: center;
+            padding: 130px 20px 80px;
             background: radial-gradient(circle at center, #ffffff 0%, #f5f5f7 100%);
+        }
+        .hero-inner {
+            width: 100%;
+            max-width: 1150px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-text { text-align: left; }
+        .hero-visual { position: relative; }
+        .hero-visual img {
+            width: 100%;
+            height: 460px;
+            object-fit: cover;
+            border-radius: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            display: block;
+        }
+        .hero-chat-card {
+            position: absolute;
+            left: -24px;
+            bottom: -24px;
+            width: 300px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+            padding: 16px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+        .hero-chat-head {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 700; margin-bottom: 12px;
+        }
+        .hero-chat-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; }
+        .hero-chat-demo {
+            margin-left: auto; background: #f59e0b; color: #111;
+            font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
+        }
+        .hero-chat-msg {
+            max-width: 92%; padding: 10px 14px; border-radius: 16px;
+            font-size: 13px; line-height: 1.45; margin-bottom: 8px;
+        }
+        .hero-chat-msg.user { margin-left: auto; background: #000; color: #fff; border-bottom-right-radius: 4px; }
+        .hero-chat-msg.bot { background: #f5f5f7; color: #1d1d1f; border-bottom-left-radius: 4px; }
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 44px; }
+            .hero-text { text-align: center; }
+            .hero-visual img { height: 300px; }
+            .hero-chat-card { left: 12px; right: 12px; width: auto; bottom: -16px; }
         }
         .hero h1 {
             font-size: 72px;
@@ -378,11 +429,24 @@
         .buy-button:hover { transform: scale(1.02); opacity: 0.9; }
 
         footer {
-            padding: 60px 20px;
-            text-align: center;
+            padding: 70px 20px 40px;
             border-top: 1px solid #eee;
             color: var(--text-muted);
             font-size: 14px;
+        }
+        .footer-inner {
+            max-width: 1100px; margin: 0 auto 40px;
+            display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 40px;
+            text-align: left;
+        }
+        .footer-logo { font-weight: 800; letter-spacing: 1px; color: #000; margin-bottom: 12px; }
+        .footer-col h4 { color: #000; font-size: 14px; margin-bottom: 14px; }
+        .footer-col a, .footer-col span { display: block; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom { max-width: 1100px; margin: 0 auto; padding-top: 30px; border-top: 1px solid #eee; text-align: center; }
+        .footer-bottom p { margin-bottom: 6px; }
+        @media (max-width: 768px) {
+            .footer-inner { grid-template-columns: 1fr 1fr; gap: 30px; }
         }
 
         @media (max-width: 768px) {
@@ -410,6 +474,7 @@ body{padding-top:37px;}
             <div style="font-weight: 800; letter-spacing: 1px;">STACKSBOT</div>
             <div class="nav-links">
                 <a href="#features">Fonctionnalités</a>
+                <a href="#demo">Démo</a>
                 <a href="#roi">ROI</a>
                 <a href="#pricing">Tarifs</a>
                 <a href="#pricing" class="cta-button" style="padding: 8px 20px; font-size: 11px; color: white;">Démarrer</a>
@@ -418,9 +483,21 @@ body{padding-top:37px;}
     </nav>
 
     <section class="hero">
-        <h1>L'Intelligence <br> Commerciale.</h1>
-        <p>L'assistant IA haut de gamme conçu pour transformer vos visiteurs en clients fidèles et automatiser votre croissance.</p>
-        <a href="#vision" class="cta-button">Découvrir l'expérience</a>
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1>L'Intelligence <br> Commerciale.</h1>
+                <p>L'assistant IA haut de gamme conçu pour transformer vos visiteurs en clients fidèles et automatiser votre croissance.</p>
+                <a href="#demo" class="cta-button">Découvrir l'expérience</a>
+            </div>
+            <div class="hero-visual">
+                <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1200&q=80" alt="Commerçant accueillant un client à la caisse de sa boutique" loading="eager">
+                <div class="hero-chat-card">
+                    <div class="hero-chat-head"><span class="hero-chat-dot"></span> StacksBot <span class="hero-chat-demo">DÉMO</span></div>
+                    <div class="hero-chat-msg user">Quels sont vos horaires ?</div>
+                    <div class="hero-chat-msg bot">Ouverts du lundi au samedi, de 9h à 19h. Souhaitez-vous réserver un créneau ?</div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- SECTION VISION -->
@@ -475,7 +552,7 @@ body{padding-top:37px;}
         <div class="roi-container">
             <p style="font-size: 18px; opacity: 0.9;">Saisissez le nombre de clients potentiels qui quittent votre site faute de réponse immédiate :</p>
             <div class="roi-input-group">
-                <input type="number" id="lost-leads" class="roi-input" placeholder="Ex: 20" oninput="calculateROI()">
+                <input type="number" id="lost-leads" class="roi-input" placeholder="Ex: 20" min="0" step="1" inputmode="numeric" oninput="calculateROI()">
                 <span style="font-weight: 500; opacity: 0.8;">Clients perdus / mois</span>
             </div >
             <div class="roi-result" id="roi-value">0 € de manque à gagner</div>
@@ -484,7 +561,7 @@ body{padding-top:37px;}
     </section>
 
     <!-- INTERACTIVE DEMO -->
-    <section class="demo-section">
+    <section id="demo" class="demo-section">
         <h2 class="demo-title">L'Expérience StacksBot</h2>
         <p style="text-align:center; margin-bottom: 40px; color: var(--text-muted); max-width: 600px;">
             Ne nous croyez pas sur parole. Testez la puissance de l'IA en temps réel avec nos scénarios métiers.
@@ -566,21 +643,90 @@ body{padding-top:37px;}
     </section>
 
     <footer>
-        <p>&copy; 2026 StacksBot. Designed and engineered by STACKS.</p>
-    </footer >
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div class="footer-logo">STACKSBOT</div>
+                <p>L'assistant IA qui transforme vos visiteurs en clients, 24h/24.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Produit</h4>
+                <a href="#features">Fonctionnalités</a>
+                <a href="#demo">Démo interactive</a>
+                <a href="#roi">Calculateur ROI</a>
+                <a href="#pricing">Tarifs</a>
+            </div>
+            <div class="footer-col">
+                <h4>Projet</h4>
+                <a href="https://github.com/BVDMANN/Stacks-Bot" target="_blank" rel="noopener">Code source sur GitHub</a>
+                <a href="https://github.com/BVDMANN" target="_blank" rel="noopener">Tous les projets Stacks</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <a href="mailto:boulinguirandy12@gmail.com">boulinguirandy12@gmail.com</a>
+                <span>Stacks — Champs-sur-Marne, France</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 StacksBot. Designed and engineered by STACKS.</p>
+            <p>Démo statique — les réponses sont simulées, aucun paiement réel, aucune donnée envoyée.</p>
+        </div>
+    </footer>
 
     <script>
+        // Calculateur ROI : une seule source de vérité (la valeur du champ),
+        // recalcul à chaque saisie, valeur conservée pendant la session.
+        var ROI_PER_LEAD = 50;
+        function readLeads() {
+            var input = document.getElementById('lost-leads');
+            if (!input) return 0;
+            var n = Math.floor(Number(input.value));
+            return (isFinite(n) && n > 0) ? n : 0;
+        }
         function calculateROI() {
-            const leadsInput = document.getElementById('lost-leads');
-            const resultDiv = document.getElementById('roi-value');
-            if (!leadsInput) return;
+            var input = document.getElementById('lost-leads');
+            var resultDiv = document.getElementById('roi-value');
+            if (!input || !resultDiv) return;
+            var leads = readLeads();
+            // Normalise le champ (entier >= 0) sans gêner la saisie en cours.
+            if (input.value !== '' && String(leads) !== input.value) input.value = leads;
+            try { sessionStorage.setItem('stacksbot-roi-leads', String(leads)); } catch (e) {}
+            var loss = leads * ROI_PER_LEAD;
+            resultDiv.innerText = loss.toLocaleString('fr-FR') + ' € de manque à gagner / mois';
+            resultDiv.style.transform = 'scale(1.1)';
+            setTimeout(function () { resultDiv.style.transform = 'scale(1)'; }, 100);
+        }
+        (function restoreROI() {
+            try {
+                var saved = sessionStorage.getItem('stacksbot-roi-leads');
+                if (saved !== null) {
+                    var input = document.getElementById('lost-leads');
+                    if (input) input.value = saved;
+                }
+            } catch (e) {}
+            calculateROI();
+        })();
 
-            const leads = parseInt(leadsInput.value) || 0;
-            const loss = leads * 50;
-
-            resultDiv.innerText = loss > 0 ? loss.toLocaleString('fr-FR') + " € de manque à gagner / mois" : "0 € de manque à gagner";
-            resultDiv.style.transform = "scale(1.1)";
-            setTimeout(() => { resultDiv.style.transform = "scale(1)"; }, 100);
+        // Détecte une date / heure déjà donnée (« demain 14h », « vendredi 10h30 »).
+        function extractWhen(text) {
+            var low = text.toLowerCase();
+            var day = null;
+            if (/demain/.test(low)) day = 'demain';
+            else if (/aujourd'hui|aujourd’hui/.test(low)) day = "aujourd'hui";
+            else {
+                var days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+                for (var i = 0; i < days.length; i++) {
+                    if (low.indexOf(days[i]) !== -1) { day = days[i]; break; }
+                }
+            }
+            var hm = low.match(/(\d{1,2})\s*h\s*(\d{2})?|(\d{1,2}):(\d{2})/);
+            var timeLabel = null;
+            if (hm) {
+                var h = String(parseInt(hm[1] || hm[3], 10));
+                var m = hm[2] || hm[4];
+                timeLabel = m ? h + 'h' + m : h + 'h';
+            }
+            if (!day && !timeLabel) return null;
+            return [day, timeLabel].filter(Boolean).join(' à ');
         }
 
         async function sendDemo(text = null) {
@@ -605,7 +751,12 @@ body{padding-top:37px;}
                 if (low.includes('horaire') || low.includes('ouvert')) {
                     response = "Nous sommes ouverts du lundi au samedi, de 9h à 19h. C'est le moment idéal pour venir nous voir. Souhaitez-vous que je vous réserve un créneau prioritaire ?";
                 } else if (low.includes('réserver') || low.includes('rendez-vous') || low.includes('date')) {
-                    response = "Absolument. Je peux gérer votre agenda en temps réel. Pour quelle date et heure souhaitez-vous venir ? Je m'occupe de tout.";
+                    const when = extractWhen(msgText);
+                    if (when) {
+                        response = "Parfait, " + when + " — c'est noté pour votre réservation. Pour finaliser, il me faudrait juste votre nom et un numéro de téléphone. On fait comme ça ?";
+                    } else {
+                        response = "Absolument. Je peux gérer votre agenda en temps réel. Pour quelle date et heure souhaitez-vous venir ? Je m'occupe de tout.";
+                    }
                 } else if (low.includes('prix') || low.includes('tarif') || low.includes('combien')) {
                     response = "Nos solutions sont conçues pour être rentables dès le premier mois. Je peux vous envoyer notre grille tarifaire détaillée par email si vous le souhaitez ?";
                 } else if (low.includes('devis') || low.includes('gratuit')) {
